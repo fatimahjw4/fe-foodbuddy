@@ -47,7 +47,7 @@ function setupLogoutButton() {
 // ===== SESSION CHECK =====
 async function forceCheckSession() {
   try {
-    const res = await fetch('http://127.0.0.1:5000/api/admin/profile', { credentials: 'include' });
+    const res = await fetch('http://72.60.78.25:5002/api/admin/profile', { credentials: 'include' });
     if (res.status === 401) {
       sessionStorage.removeItem('admin_logged_in');
       window.location.replace('/login?reason=session_expired');
@@ -83,3 +83,4 @@ document.addEventListener('DOMContentLoaded', () => {
   const justLoggedIn = sessionStorage.getItem('just_logged_in');
   if (!justLoggedIn) forceCheckSession();
 });
+
