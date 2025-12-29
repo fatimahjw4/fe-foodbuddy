@@ -1,0 +1,10 @@
+{
+  "routes": [
+    { "src": "/", "dest": "/pages/index.html" },
+    { "src": "/login", "dest": "/pages/login.html" },
+    { "src": "/dashboard", "dest": "/pages/dashboard.html" },
+    { "src": "/kelola", "dest": "/pages/kelola.html" },
+    { "src": "/profile", "dest": "/pages/profile.html" },
+    { "src": "/rekomendasi", "dest": "/pages/rekomendasi.html" }
+  ]
+}
