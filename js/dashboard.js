@@ -1,7 +1,7 @@
 // ============================================
 // KONSTANTA URL
 // ============================================
-const BASE_URL = "http://127.0.0.1:5000";
+const BASE_URL = "http://72.60.78.25:5002";
 const PROFILE_URL = `${BASE_URL}/api/admin/profile`;
 // const LOGOUT_URL = `${BASE_URL}/api/admin/logout`;
 const STATS_MAKANAN_URL = `${BASE_URL}/api/stats/makanan`;
@@ -336,3 +336,4 @@ fetch(PROFILE_URL, { method: "GET", credentials: "include" })
 //         alert('Terjadi kesalahan jaringan.');
 //     }
 // });
+
