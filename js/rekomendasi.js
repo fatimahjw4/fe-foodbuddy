@@ -510,7 +510,7 @@ document.addEventListener("DOMContentLoaded", () => {
     mealContainer.innerHTML = "";
 
     try {
-      const res = await fetch("http://127.0.0.1:5000/api/recommend", {
+      const res = await fetch("http://72.60.78.25:5002/api/recommend", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(lastPayload)
@@ -539,4 +539,5 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
 
