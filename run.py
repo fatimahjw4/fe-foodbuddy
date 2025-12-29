@@ -15,7 +15,7 @@ app = Flask(__name__, static_folder=None)
 def is_admin_logged_in(req_cookies):
     try:
         res = requests.get(
-            "http://127.0.0.1:5000/api/admin/profile",
+            "http://72.60.78.25:5002/api/admin/profile",
             cookies=req_cookies,
             timeout=2
         )
