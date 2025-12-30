@@ -10,7 +10,7 @@ loginForm.addEventListener('submit', async (e) => {
   const password = document.getElementById('password').value;
 
   try {
-    const res = await fetch('https://srv1222479.hstgr.cloud:8443/api/admin/login', {
+    const res = await fetch('https://srv1222479.hstgr.cloud/api/admin/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',  
@@ -50,6 +50,7 @@ loginForm.addEventListener('submit', async (e) => {
 
   setTimeout(() => { alertBox.style.display = 'none'; }, 3000);
 });
+
 
 
 
