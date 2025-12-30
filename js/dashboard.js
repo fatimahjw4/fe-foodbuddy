@@ -322,9 +322,9 @@ fetch(PROFILE_URL, { method: "GET", credentials: "include" })
     if (err !== 'Unauthorized') window.location.href = '/login';
 });
 
+// // =======================================================
+// 6. Logout
 // =======================================================
-6. Logout
-=======================================================
 document.getElementById('logoutBtn').addEventListener('click', async (e) => {
     e.preventDefault();
     try {
@@ -336,6 +336,7 @@ document.getElementById('logoutBtn').addEventListener('click', async (e) => {
         alert('Terjadi kesalahan jaringan.');
     }
 });
+
 
 
 
