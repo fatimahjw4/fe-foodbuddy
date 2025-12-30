@@ -27,10 +27,17 @@ loginForm.addEventListener('submit', async (e) => {
     }
 
     if (data.success) {
+      // === WAJIB SET SESSION FLAG ===
+      sessionStorage.setItem('admin_logged_in', 'true');
+      sessionStorage.setItem('just_logged_in', 'true');
+    
       alertBox.style.display = 'block';
       alertBox.className = 'alert alert-success text-center mb-3 py-2';
       alertBox.textContent = data.message;
-      window.location.replace('/dashboard'); // ganti href -> replace
+    
+      window.location.replace('/dashboard');
+    }
+
     } else {
       alertBox.style.display = 'block';
       alertBox.className = 'alert alert-danger text-center mb-3 py-2';
@@ -50,6 +57,7 @@ loginForm.addEventListener('submit', async (e) => {
 
   setTimeout(() => { alertBox.style.display = 'none'; }, 3000);
 });
+
 
 
 
