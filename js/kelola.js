@@ -1,7 +1,7 @@
 // ======================================
 // KONSTANTA & KONFIGURASI UMUM
 // ======================================
-const API_BASE_URL = 'http://72.60.78.25:5002/api';
+const API_BASE_URL = 'https://srv1222479.hstgr.cloud/api';
 // Element Modal & Form BARU (dari kelola.html yang sudah disesuaikan)
 const mainDataModal = document.getElementById('mainDataModal');
 const makananForm = document.getElementById('makananForm');
@@ -404,7 +404,7 @@ authFetch(`${API_BASE_URL}/admin/profile`)
     const profilePicEl = document.getElementById("profile-pic");
     if (usernameEl) usernameEl.textContent = data.username;
     if (profilePicEl) {
-        const newSrc = data.profile_pic ? `http://72.60.78.25:5002${data.profile_pic}?v=${Date.now()}` : "https://i.pravatar.cc/60?img=12";
+        const newSrc = data.profile_pic ? `https://srv1222479.hstgr.cloud${data.profile_pic}?v=${Date.now()}` : "https://i.pravatar.cc/60?img=12";
         if(profilePicEl.src !== newSrc){
             profilePicEl.style.opacity = "0";
             profilePicEl.onload = () => { profilePicEl.style.transition="opacity .25s ease"; profilePicEl.style.opacity="1"; };
@@ -422,4 +422,5 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('kategoriFilter')?.addEventListener('change', fetchMakanan);
     document.getElementById('jenisFilter')?.addEventListener('change', fetchMakanan);
 });
+
 
