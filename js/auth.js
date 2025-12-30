@@ -53,17 +53,18 @@ function setupLogoutButton() {
 // ===== SESSION CHECK (AMAN) =====
 async function forceCheckSession() {
   try {
-    const res = await fetch(PROFILE_URL, {
-      credentials: 'include'
-    });
+    const res = await fetch(
+      'https://srv1222479.hstgr.cloud/api/admin/profile',
+      { credentials: 'include' }
+    );
 
-    // JANGAN langsung logout
     if (res.status === 401) {
-      console.warn('Session invalid');
-      window.location.replace(LOGIN_PAGE);
+      sessionStorage.removeItem('admin_logged_in');
+      window.location.replace('/login?reason=session_expired');
     }
   } catch (err) {
-    console.warn('Session check failed, retry later');
+    sessionStorage.removeItem('admin_logged_in');
+    window.location.replace('/login?reason=error');
   }
 }
 
@@ -79,3 +80,4 @@ document.addEventListener('DOMContentLoaded', () => {
   setupLogoutButton();
   forceCheckSession();
 });
+
