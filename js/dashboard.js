@@ -328,7 +328,7 @@ fetch(PROFILE_URL, { method: "GET", credentials: "include" })
 document.getElementById('logoutBtn').addEventListener('click', async (e) => {
     e.preventDefault();
     try {
-        const response = await fetch(LOGOUT_URL, { method: 'GET', credentials: 'include' });
+        const response = await fetch(LOGOUT_URL, { method: 'POST', credentials: 'include' });
         if (response.ok) window.location.href = '/login?status=logout_success';
         else alert('Gagal logout. Silakan coba lagi.');
     } catch (error) {
@@ -336,6 +336,7 @@ document.getElementById('logoutBtn').addEventListener('click', async (e) => {
         alert('Terjadi kesalahan jaringan.');
     }
 });
+
 
 
 
