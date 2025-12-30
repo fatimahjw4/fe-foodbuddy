@@ -154,7 +154,7 @@
 <script>
 (function () {
   function forceRecheckAuth() {
-    fetch('http://127.0.0.1:5000/api/admin/profile', { credentials: 'include' })
+    fetch('https://srv1222479.hstgr.cloud/api/admin/profile', { credentials: 'include' })
       .then(res => {
         if (res.status === 401) {
           window.location.replace('/login');
@@ -174,3 +174,4 @@
 
 </body>
 </html>
+
