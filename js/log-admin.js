@@ -1,3 +1,6 @@
+const loginForm = document.getElementById('loginForm');
+const alertBox = document.getElementById('alert'); // ← INI YANG KURANG
+
 loginForm.addEventListener('submit', async (e) => {
   e.preventDefault();
 
@@ -37,3 +40,4 @@ loginForm.addEventListener('submit', async (e) => {
     alertBox.textContent = 'Terjadi kesalahan server.';
   }
 });
+
