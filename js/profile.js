@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // LOAD DATA PROFIL ADMIN (ANTI CACHE FIX)
   // ===============================
   try {
-    const res = await fetch("http://72.60.78.25:5002/api/admin/profile", {
+    const res = await fetch("https://srv1222479.hstgr.cloud/api/admin/profile", {
       method: "GET",
       credentials: "include",
     });
@@ -110,7 +110,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     try {
-      const res = await fetch("http://72.60.78.25:5002/api/admin/profile", {
+      const res = await fetch("https://srv1222479.hstgr.cloud/api/admin/profile", {
         method: "POST",
         body: formData,
         credentials: "include",
@@ -177,4 +177,5 @@ function handleFileSelect(e) {
   };
   reader.readAsDataURL(file);
 }
+
 
