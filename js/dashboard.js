@@ -3,7 +3,7 @@
 // ============================================
 const BASE_URL = "https://srv1222479.hstgr.cloud";
 const PROFILE_URL = `${BASE_URL}/api/admin/profile`;
-const LOGOUT_URL = `${BASE_URL}/api/admin/logout`;
+// const LOGOUT_URL = `${BASE_URL}/api/admin/logout`;
 const STATS_MAKANAN_URL = `${BASE_URL}/api/stats/makanan`;
 const RECENT_ACTIVITY_URL = `${BASE_URL}/api/makanan/terbaru`; // URL untuk Aktivitas Terbaru
 const STATS_RECOMMENDATION_URL = `${BASE_URL}/api/stats/recommendation`;
@@ -336,6 +336,7 @@ document.getElementById('logoutBtn').addEventListener('click', async (e) => {
         alert('Terjadi kesalahan jaringan.');
     }
 });
+
 
 
 
