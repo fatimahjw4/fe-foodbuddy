@@ -1,5 +1,5 @@
 // ===============================
-// GLOBAL AUTH (FIXED VERSION)
+// GLOBAL AUTH (DEV SAFE VERSION)
 // ===============================
 const BASE_URL = 'https://srv1222479.hstgr.cloud';
 const LOGOUT_URL = `${BASE_URL}/api/admin/logout`;
@@ -9,7 +9,7 @@ const LOGIN_PAGE = '/login';
 const IDLE_LIMIT = 30 * 60 * 1000; // 30 menit
 let idleTimer;
 
-// ===== IDLE LOGOUT =====
+// ===== IDLE LOGOUT (INI BOLEH LOGOUT) =====
 function resetIdleTimer() {
   clearTimeout(idleTimer);
   idleTimer = setTimeout(async () => {
@@ -27,6 +27,7 @@ function resetIdleTimer() {
   }, IDLE_LIMIT);
 }
 
+// reset timer tiap ada aktivitas
 ['click','mousemove','keydown','scroll','touchstart'].forEach(evt =>
   document.addEventListener(evt, resetIdleTimer)
 );
@@ -43,6 +44,8 @@ function setupLogoutButton() {
         method: 'POST',
         credentials: 'include'
       });
+    } catch (e) {
+      console.warn(e);
     } finally {
       sessionStorage.clear();
       window.location.replace(`${LOGIN_PAGE}?status=logout`);
@@ -50,21 +53,23 @@ function setupLogoutButton() {
   });
 }
 
-// ===== SESSION CHECK (AMAN) =====
+// ===== SESSION CHECK (DEV MODE: JANGAN AUTO REDIRECT) =====
 async function forceCheckSession() {
   try {
-    const res = await fetch(
-      'https://srv1222479.hstgr.cloud/api/admin/profile',
-      { credentials: 'include' }
-    );
+    const res = await fetch(PROFILE_URL, {
+      credentials: 'include'
+    });
 
     if (res.status === 401) {
-      sessionStorage.removeItem('admin_logged_in');
-      window.location.replace('/login?reason=session_expired');
+      // ⚠️ DEV MODE:
+      // kemungkinan backend restart / python app.py
+      console.warn('Session invalid (server restart / dev mode)');
+      return; // ⛔ JANGAN redirect
     }
+
   } catch (err) {
-    sessionStorage.removeItem('admin_logged_in');
-    window.location.replace('/login?reason=error');
+    console.warn('Session check failed (server down?)', err);
+    return; // ⛔ JANGAN redirect
   }
 }
 
@@ -80,4 +85,3 @@ document.addEventListener('DOMContentLoaded', () => {
   setupLogoutButton();
   forceCheckSession();
 });
-
