@@ -36,7 +36,6 @@ loginForm.addEventListener('submit', async (e) => {
       alertBox.textContent = data.message;
     
       window.location.replace('/dashboard');
-    }
 
     } else {
       alertBox.style.display = 'block';
@@ -57,6 +56,7 @@ loginForm.addEventListener('submit', async (e) => {
 
   setTimeout(() => { alertBox.style.display = 'none'; }, 3000);
 });
+
 
 
 
