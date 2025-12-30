@@ -1,7 +1,7 @@
 // ============================================
 // KONSTANTA URL
 // ============================================
-const BASE_URL = "https://srv1222479.hstgr.cloud";
+const BASE_URL = 'https://srv1222479.hstgr.cloud';
 const PROFILE_URL = `${BASE_URL}/api/admin/profile`;
 const LOGOUT_URL = `${BASE_URL}/api/admin/logout`;
 const STATS_MAKANAN_URL = `${BASE_URL}/api/stats/makanan`;
@@ -336,6 +336,7 @@ document.getElementById('logoutBtn').addEventListener('click', async (e) => {
         alert('Terjadi kesalahan jaringan.');
     }
 });
+
 
 
 
