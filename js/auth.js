@@ -47,20 +47,20 @@ function setupLogoutButton() {
 // ===== SESSION CHECK =====
 async function forceCheckSession() {
   try {
-    const res = await fetch('https://srv1222479.hstgr.cloud/api/admin/profile', { credentials: 'include' });
-    if (res.status === 401) {
-      sessionStorage.removeItem('admin_logged_in');
-      window.location.replace('/login?reason=session_expired');
-    } else {
-      sessionStorage.setItem('admin_logged_in', 'true');
-      const body = document.getElementById('adminBody');
-      if (body) body.classList.remove('hidden');
+    const res = await fetch(
+      'https://srv1222479.hstgr.cloud/api/admin/profile',
+      { credentials: 'include' }
+    );
+
+    if (!res.ok) {
+      window.location.href = '/login';
     }
-  } catch {
-    sessionStorage.removeItem('admin_logged_in');
-    window.location.replace('/login?reason=error');
+  } catch (err) {
+    console.error(err);
+    window.location.href = '/login';
   }
 }
+
 
 // ===== BFCache & first load handling =====
 window.addEventListener('pageshow', event => {
@@ -83,5 +83,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const justLoggedIn = sessionStorage.getItem('just_logged_in');
   if (!justLoggedIn) forceCheckSession();
 });
+
 
 
