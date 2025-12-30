@@ -510,7 +510,7 @@ document.addEventListener("DOMContentLoaded", () => {
     mealContainer.innerHTML = "";
 
     try {
-      const res = await fetch("http://72.60.78.25:5002/api/recommend", {
+      const res = await fetch("https://srv1222479.hstgr.cloud/api/recommend", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(lastPayload)
@@ -539,6 +539,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
 
 
 
