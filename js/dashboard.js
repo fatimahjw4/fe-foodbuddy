@@ -325,17 +325,18 @@ fetch(PROFILE_URL, { method: "GET", credentials: "include" })
 // // =======================================================
 // 6. Logout
 // =======================================================
-document.getElementById('logoutBtn').addEventListener('click', async (e) => {
-    e.preventDefault();
-    try {
-        const response = await fetch(LOGOUT_URL, { method: 'GET', credentials: 'include' });
-        if (response.ok) window.location.href = '/login?status=logout_success';
-        else alert('Gagal logout. Silakan coba lagi.');
-    } catch (error) {
-        console.error('Error saat logout:', error);
-        alert('Terjadi kesalahan jaringan.');
-    }
-});
+// document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+//     e.preventDefault();
+//     try {
+//         const response = await fetch(LOGOUT_URL, { method: 'GET', credentials: 'include' });
+//         if (response.ok) window.location.href = '/login?status=logout_success';
+//         else alert('Gagal logout. Silakan coba lagi.');
+//     } catch (error) {
+//         console.error('Error saat logout:', error);
+//         alert('Terjadi kesalahan jaringan.');
+//     }
+// });
+
 
 
 
