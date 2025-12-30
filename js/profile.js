@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     let baseURL = data.profile_pic
       ? (data.profile_pic.startsWith("http")
           ? data.profile_pic
-          : `http://127.0.0.1:5000/${data.profile_pic}`)
+          : `https://srv1222479.hstgr.cloud/${data.profile_pic}`)
       : "https://i.pravatar.cc/60?img=12";
 
     // ⛔ FIX UTAMA — Tambahkan timestamp biar GA KE-CACHE!
@@ -177,6 +177,7 @@ function handleFileSelect(e) {
   };
   reader.readAsDataURL(file);
 }
+
 
 
 
