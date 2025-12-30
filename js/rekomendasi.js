@@ -420,7 +420,7 @@ document.getElementById("wizardForm").addEventListener("submit", async (e) => {
     
     // 5. Panggil API Rekomendasi ML
     try {
-        const response = await fetch('http://127.0.0.1:5000/api/recommend', {
+        const response = await fetch('https://srv1222479.hstgr.cloud/api/recommend', {
             method: 'POST',
             // Pastikan Content-Type diatur dengan benar
             headers: {
@@ -539,5 +539,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
 
 
