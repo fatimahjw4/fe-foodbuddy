@@ -1,8 +1,11 @@
 // ===============================
-// GLOBAL AUTH (IDLE + LOGOUT + SESSION CHECK + BFCache)
+// GLOBAL AUTH (FIXED VERSION)
 // ===============================
-const LOGOUT_URL = '/api/admin/logout';
+const BASE_URL = 'https://srv1222479.hstgr.cloud';
+const LOGOUT_URL = `${BASE_URL}/api/admin/logout`;
+const PROFILE_URL = `${BASE_URL}/api/admin/profile`;
 const LOGIN_PAGE = '/login';
+
 const IDLE_LIMIT = 30 * 60 * 1000; // 30 menit
 let idleTimer;
 
@@ -11,18 +14,20 @@ function resetIdleTimer() {
   clearTimeout(idleTimer);
   idleTimer = setTimeout(async () => {
     try {
-      await fetch(LOGOUT_URL, { method: 'POST', credentials: 'include' });
+      await fetch(LOGOUT_URL, {
+        method: 'POST',
+        credentials: 'include'
+      });
     } catch (e) {
       console.warn('Logout request failed', e);
     } finally {
-      sessionStorage.removeItem('admin_logged_in');
+      sessionStorage.clear();
       window.location.replace(`${LOGIN_PAGE}?reason=idle`);
     }
   }, IDLE_LIMIT);
 }
 
-// Pasang event listener untuk semua aktivitas user
-['click', 'mousemove', 'keydown', 'scroll', 'touchstart'].forEach(evt =>
+['click','mousemove','keydown','scroll','touchstart'].forEach(evt =>
   document.addEventListener(evt, resetIdleTimer)
 );
 resetIdleTimer();
@@ -34,55 +39,43 @@ function setupLogoutButton() {
 
   btn.addEventListener('click', async () => {
     try {
-      await fetch(LOGOUT_URL, { method: 'POST', credentials: 'include' });
-    } catch (e) {
-      console.warn('Logout request failed', e);
+      await fetch(LOGOUT_URL, {
+        method: 'POST',
+        credentials: 'include'
+      });
     } finally {
-      sessionStorage.removeItem('admin_logged_in');
+      sessionStorage.clear();
       window.location.replace(`${LOGIN_PAGE}?status=logout`);
     }
   });
 }
 
-// ===== SESSION CHECK =====
+// ===== SESSION CHECK (AMAN) =====
 async function forceCheckSession() {
   try {
-    const res = await fetch(
-      'https://srv1222479.hstgr.cloud/api/admin/profile',
-      { credentials: 'include' }
-    );
+    const res = await fetch(PROFILE_URL, {
+      credentials: 'include'
+    });
 
-    if (!res.ok) {
-      window.location.href = '/login';
+    // JANGAN langsung logout
+    if (res.status === 401) {
+      console.warn('Session invalid');
+      window.location.replace(LOGIN_PAGE);
     }
   } catch (err) {
-    console.error(err);
-    window.location.href = '/login';
+    console.warn('Session check failed, retry later');
   }
 }
 
-
-// ===== BFCache & first load handling =====
+// ===== BFCache HANDLING =====
 window.addEventListener('pageshow', event => {
-  const justLoggedIn = sessionStorage.getItem('just_logged_in');
-  if (event.persisted || !sessionStorage.getItem('admin_logged_in')) {
-    // kalau balik dari back cache atau belum login
+  if (event.persisted) {
     forceCheckSession();
-  } else if (justLoggedIn) {
-    // delay sebentar untuk menghindari race condition login → cek session
-    setTimeout(() => {
-      forceCheckSession();
-      sessionStorage.removeItem('just_logged_in');
-    }, 200); // 200ms delay cukup
   }
 });
 
 // ===== INIT =====
 document.addEventListener('DOMContentLoaded', () => {
   setupLogoutButton();
-  const justLoggedIn = sessionStorage.getItem('just_logged_in');
-  if (!justLoggedIn) forceCheckSession();
+  forceCheckSession();
 });
-
-
-
