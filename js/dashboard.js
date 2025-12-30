@@ -3,7 +3,7 @@
 // ============================================
 const BASE_URL = "https://srv1222479.hstgr.cloud";
 const PROFILE_URL = `${BASE_URL}/api/admin/profile`;
-// const LOGOUT_URL = `${BASE_URL}/api/admin/logout`;
+const LOGOUT_URL = `${BASE_URL}/api/admin/logout`;
 const STATS_MAKANAN_URL = `${BASE_URL}/api/stats/makanan`;
 const RECENT_ACTIVITY_URL = `${BASE_URL}/api/makanan/terbaru`; // URL untuk Aktivitas Terbaru
 const STATS_RECOMMENDATION_URL = `${BASE_URL}/api/stats/recommendation`;
@@ -323,18 +323,19 @@ fetch(PROFILE_URL, { method: "GET", credentials: "include" })
 });
 
 // =======================================================
-// 6. Logout
-// =======================================================
-// document.getElementById('logoutBtn').addEventListener('click', async (e) => {
-//     e.preventDefault();
-//     try {
-//         const response = await fetch(LOGOUT_URL, { method: 'GET', credentials: 'include' });
-//         if (response.ok) window.location.href = '/login?status=logout_success';
-//         else alert('Gagal logout. Silakan coba lagi.');
-//     } catch (error) {
-//         console.error('Error saat logout:', error);
-//         alert('Terjadi kesalahan jaringan.');
-//     }
-// });
+6. Logout
+=======================================================
+document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+    e.preventDefault();
+    try {
+        const response = await fetch(LOGOUT_URL, { method: 'GET', credentials: 'include' });
+        if (response.ok) window.location.href = '/login?status=logout_success';
+        else alert('Gagal logout. Silakan coba lagi.');
+    } catch (error) {
+        console.error('Error saat logout:', error);
+        alert('Terjadi kesalahan jaringan.');
+    }
+});
+
 
 
