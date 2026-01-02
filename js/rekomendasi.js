@@ -56,7 +56,6 @@ const cardContainerMap = {
 
 // ==========================
 // FE CALCULATION (FALLBACK ONLY)
-// Sesuai saran, fungsi ini tetap ada tapi hanya digunakan jika BE tidak mengirim data
 // ==========================
 function calculateNutrients(data) {
   const weight = parseFloat(data.weight) || 0;
@@ -204,6 +203,17 @@ function showStep(step) {
 // ==========================
 const summaryDailyContainer = document.getElementById("summaryDaily");
 
+/**
+ * Mendapatkan class warna Tailwind berdasarkan deviasi asupan vs target
+ * Deviasi <= 10% = Hijau (Aman)
+ * Deviasi > 10% = Orange (Warning)
+ */
+function getColorClass(actual, target) {
+    if (!target || target === 0) return 'text-green-700';
+    const diffPercent = Math.abs((actual - target) / target);
+    return diffPercent > 0.10 ? 'text-orange-600' : 'text-green-700';
+}
+
 function renderRecommendation(recommendationData, nutrients, meta = {}) {
     loadingState.classList.add("hidden");
 
@@ -228,7 +238,7 @@ function renderRecommendation(recommendationData, nutrients, meta = {}) {
             <div class="grid grid-cols-2 gap-4 text-sm text-gray-700">
             <div class="bg-white rounded-lg p-3 shadow-sm">
                 <p class="text-xs text-gray-500 font-semibold">Kalori</p>
-                <p class="text-lg font-extrabold text-green-700">
+                <p class="text-lg font-extrabold ${getColorClass(daily.cal, nutrients.total_cal)}">
                 ${daily.cal ?? nutrients.total_cal}
                 <span class="text-sm font-semibold text-gray-500"> / ${nutrients.total_cal} kcal</span>
                 </p>
@@ -236,7 +246,7 @@ function renderRecommendation(recommendationData, nutrients, meta = {}) {
 
             <div class="bg-white rounded-lg p-3 shadow-sm">
                 <p class="text-xs text-gray-500 font-semibold">Protein</p>
-                <p class="text-lg font-extrabold text-green-700">
+                <p class="text-lg font-extrabold ${getColorClass(daily.protein, nutrients.target_protein)}">
                 ${daily.protein ?? nutrients.target_protein}
                 <span class="text-sm font-semibold text-gray-500"> / ${nutrients.target_protein} g</span>
                 </p>
@@ -244,7 +254,7 @@ function renderRecommendation(recommendationData, nutrients, meta = {}) {
 
             <div class="bg-white rounded-lg p-3 shadow-sm">
                 <p class="text-xs text-gray-500 font-semibold">Lemak</p>
-                <p class="text-lg font-extrabold text-green-700">
+                <p class="text-lg font-extrabold ${getColorClass(daily.fat, nutrients.target_fat)}">
                 ${daily.fat ?? nutrients.target_fat}
                 <span class="text-sm font-semibold text-gray-500"> / ${nutrients.target_fat} g</span>
                 </p>
@@ -252,7 +262,7 @@ function renderRecommendation(recommendationData, nutrients, meta = {}) {
 
             <div class="bg-white rounded-lg p-3 shadow-sm">
                 <p class="text-xs text-gray-500 font-semibold">Karbohidrat</p>
-                <p class="text-lg font-extrabold text-green-700">
+                <p class="text-lg font-extrabold ${getColorClass(daily.carb, nutrients.target_carb)}">
                 ${daily.carb ?? nutrients.target_carb}
                 <span class="text-sm font-semibold text-gray-500"> / ${nutrients.target_carb} g</span>
                 </p>
@@ -275,7 +285,6 @@ function renderRecommendation(recommendationData, nutrients, meta = {}) {
         </div>
     </div>
     `;   
-
 
     if (summaryDailyContainer) {
         summaryDailyContainer.innerHTML = totalSummary;
@@ -371,8 +380,6 @@ document.getElementById("wizardForm").addEventListener("submit", async (e) => {
 
     const form = e.target;
     const formData = Object.fromEntries(new FormData(form).entries());
-    
-    // Perhitungan FE sekarang murni sebagai fallback jika BE bermasalah
     const feCalculated = calculateNutrients(formData);
 
     const payload = {
@@ -407,7 +414,6 @@ document.getElementById("wizardForm").addEventListener("submit", async (e) => {
         const result = await response.json();
         if (!result.success) throw new Error(result.error);
 
-        // REVISI UTAMA: Mengambil Target dari BE secara mutlak
         const finalNutrients = result.calculated_nutrients
             ? {
                 total_cal: Math.round(result.calculated_nutrients.total_cal_target),
@@ -415,7 +421,7 @@ document.getElementById("wizardForm").addEventListener("submit", async (e) => {
                 target_fat: Math.round(result.calculated_nutrients.target_macro_total?.Fat),
                 target_carb: Math.round(result.calculated_nutrients.target_macro_total?.Carb)
               }
-            : feCalculated; // Fallback jika BE tidak kirim info nutrisi
+            : feCalculated;
 
         renderRecommendation(
             result.recommendation,
@@ -468,7 +474,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const result = await res.json();
       if (!result.success) throw new Error(result.error);
 
-      // Sinkronkan nutrisi hasil reroll dari data BE
       renderRecommendation(
         result.recommendation,
         {
