@@ -670,6 +670,44 @@ body.recommendation-page {
   font-size: 1.1rem;
 }
 
+/* ======================================================
+   ADDITIONAL UI REFINEMENTS (SINKRONISASI JS)
+====================================================== */
+
+/* Transisi halus untuk perubahan warna teks (Logika Warna) */
+#summaryDaily p, 
+#summaryDaily span {
+    transition: color 0.4s ease, transform 0.2s ease;
+}
+
+/* Animasi angka saat berubah (Opsional) */
+.number-pop {
+    animation: pop 0.3s ease-out;
+}
+
+@keyframes pop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+/* Hover effect lebih dalam untuk kartu menu */
+.menu-item {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.menu-item:hover {
+    border-color: #10b981;
+    background-color: #f0fdf4;
+    transform: scale(1.02);
+}
+
+/* Style tambahan untuk label ringkasan agar lebih scannable */
+.summary-label {
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.7rem;
+}
 
 /* ================= FOOTER ================= */
 footer {
@@ -830,6 +868,7 @@ footer p {
     font-size: 1rem;
   }
 }
+
 
 
 
