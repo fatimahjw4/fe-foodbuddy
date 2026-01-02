@@ -1,7 +1,7 @@
 /**
  * rekomendasi.js
  * Logic untuk Wizard Form dan Integrasi API Rekomendasi ML
- * API Endpoint: http://127.0.0.1:5000/api/recommend
+ * API Endpoint: https://srv1222479.hstgr.cloud/api/recommend
  */
 
 // ==========================
@@ -55,7 +55,8 @@ const cardContainerMap = {
 };
 
 // ==========================
-// FE CALCULATION (TETAP ADA)
+// FE CALCULATION (FALLBACK ONLY)
+// Sesuai saran, fungsi ini tetap ada tapi hanya digunakan jika BE tidak mengirim data
 // ==========================
 function calculateNutrients(data) {
   const weight = parseFloat(data.weight) || 0;
@@ -104,7 +105,6 @@ function setupCardSelection(containerId, inputId, attributeName) {
             card.classList.add('selected');
             input.value = card.getAttribute(attributeName);
             
-            // Hapus highlight error pada container saat dipilih
             container.style.border = 'none';
             container.classList.remove('p-1', 'border-red-500'); 
         });
@@ -117,7 +117,6 @@ function validateStep(stepIndex) {
     let isValid = true;
     
     inputs.forEach(input => {
-        // Reset error state
         input.classList.remove('input-error');
         const containerId = cardContainerMap[input.id];
         let container = containerId ? document.getElementById(containerId) : null;
@@ -127,16 +126,13 @@ function validateStep(stepIndex) {
         }
 
         if (input.type === 'hidden' && input.value.trim() === "") {
-            // Validasi untuk Card Selection (Hidden Input)
             if (container) {
-                // Terapkan styling error
                 container.style.border = '2px solid #ef4444';
                 container.style.borderRadius = '0.75rem';
                 container.classList.add('p-1', 'border-red-500'); 
                 isValid = false;
             }
         } else if (input.type !== 'hidden' && (input.value.trim() === "" || (input.type === 'number' && (parseFloat(input.value) <= 0 || isNaN(parseFloat(input.value)))))) {
-            // Validasi untuk Number Input (kosong atau <= 0)
             input.classList.add('input-error');
             isValid = false;
         } else if (input.type !== 'hidden') {
@@ -167,7 +163,6 @@ function showStep(step) {
 
     prevBtn.style.display = step === 0 ? "none" : "inline-flex";
     
-    // Atur posisi tombol 'Lanjut' / 'Submit'
     if (step === 0) {
         nextBtn.classList.remove('ml-auto');
     } else {
@@ -177,16 +172,13 @@ function showStep(step) {
     nextBtn.style.display = step === steps.length - 1 ? "none" : "inline-flex";
     submitBtn.style.display = step === steps.length - 1 ? "inline-flex" : "none";
     
-    // Update Title
     mainTitle.textContent = titles[step];
 
-    // Update Progress Dots
     const dots = document.querySelectorAll('.step-dot');
     const lines = document.querySelectorAll('.step-line');
     
     dots.forEach((dot, index) => {
         dot.classList.remove('active', 'completed');
-        
         if (index === step) {
             dot.classList.add('active');
         } else if (index < step) {
@@ -201,7 +193,6 @@ function showStep(step) {
         }
     });
 
-    // Update Review Step
     if(step === steps.length - 1){
         updateReviewData();
     }
@@ -212,10 +203,6 @@ function showStep(step) {
 // RENDER RECOMMENDATION
 // ==========================
 const summaryDailyContainer = document.getElementById("summaryDaily");
-function calcPercent(value, total) {
-    if (!total || total === 0) return 0;
-    return Math.min(100, Math.round((value / total) * 100));
-}
 
 function renderRecommendation(recommendationData, nutrients, meta = {}) {
     loadingState.classList.add("hidden");
@@ -231,7 +218,6 @@ function renderRecommendation(recommendationData, nutrients, meta = {}) {
 
     const daily = meta.daily || {};
 
- // Ringkasan harian dibuat card
     const totalSummary = `
     <div class="max-w-4xl mx-auto">
         <div class="bg-green-100 p-5 rounded-xl mb-6 shadow-md border border-green-300">
@@ -291,13 +277,10 @@ function renderRecommendation(recommendationData, nutrients, meta = {}) {
     `;   
 
 
-   if (summaryDailyContainer) {
-    summaryDailyContainer.innerHTML = totalSummary;
-}
+    if (summaryDailyContainer) {
+        summaryDailyContainer.innerHTML = totalSummary;
+    }
 
-
-
-   // mealContainer HANYA UNTUK MEAL
     mealContainer.innerHTML = "";
     const grid = mealContainer;
 
@@ -386,12 +369,10 @@ document.getElementById("wizardForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     if (!validateStep(currentStep)) return; 
 
-    // 1. Ambil data form
     const form = e.target;
     const formData = Object.fromEntries(new FormData(form).entries());
     
-    // 3. Gabungkan data profil dan target kalori untuk dikirim ke BE
-    // IDEAL: FE hitung → hanya sebagai fallback
+    // Perhitungan FE sekarang murni sebagai fallback jika BE bermasalah
     const feCalculated = calculateNutrients(formData);
 
     const payload = {
@@ -406,8 +387,6 @@ document.getElementById("wizardForm").addEventListener("submit", async (e) => {
 
     lastPayload = payload;
 
-
-    // 4. Tampilkan Loading State
     wizardContainer.classList.add("hidden");
     document.getElementById("stepIndicator").classList.add("hidden"); 
     mainTitle.classList.add("hidden");
@@ -416,59 +395,36 @@ document.getElementById("wizardForm").addEventListener("submit", async (e) => {
     loadingState.classList.remove("hidden");
     document.getElementById("mealContainer").innerHTML = '';
     
-    console.log("Sending Payload:", payload); // Log payload untuk debugging
-    
-    // 5. Panggil API Rekomendasi ML
     try {
         const response = await fetch('https://srv1222479.hstgr.cloud/api/recommend', {
             method: 'POST',
-            // Pastikan Content-Type diatur dengan benar
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         });
 
-        if (!response.ok) {
-            // Tangani status HTTP error (misalnya 404, 500)
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
 
         const result = await response.json();
-    if (!result.success) throw new Error(result.error);
+        if (!result.success) throw new Error(result.error);
 
-    const finalNutrients = result.calculated_nutrients
-  ? {
-      total_cal: Math.round(
-        result.calculated_nutrients.total_cal_target ??
-        result.calculated_nutrients.TDEE ??
-        feCalculated.total_cal
-      ),
-      target_protein: Math.round(
-        result.calculated_nutrients.target_macro_total?.Protein ??
-        feCalculated.target_protein
-      ),
-      target_fat: Math.round(
-        result.calculated_nutrients.target_macro_total?.Fat ??
-        feCalculated.target_fat
-      ),
-      target_carb: Math.round(
-        result.calculated_nutrients.target_macro_total?.Carb ??
-        feCalculated.target_carb
-      )
-    }
-  : feCalculated;
+        // REVISI UTAMA: Mengambil Target dari BE secara mutlak
+        const finalNutrients = result.calculated_nutrients
+            ? {
+                total_cal: Math.round(result.calculated_nutrients.total_cal_target),
+                target_protein: Math.round(result.calculated_nutrients.target_macro_total?.Protein),
+                target_fat: Math.round(result.calculated_nutrients.target_macro_total?.Fat),
+                target_carb: Math.round(result.calculated_nutrients.target_macro_total?.Carb)
+              }
+            : feCalculated; // Fallback jika BE tidak kirim info nutrisi
 
-
-   renderRecommendation(
-    result.recommendation,
-    finalNutrients,
-    {
-        daily: result.daily_totals_primary,
-        warning: result.daily_warning
-    }
-    );
-
+        renderRecommendation(
+            result.recommendation,
+            finalNutrients,
+            {
+                daily: result.daily_totals_primary,
+                warning: result.daily_warning
+            }
+        );
 
     } catch (error) {
         console.error("Gagal mendapatkan rekomendasi:", error);
@@ -476,7 +432,7 @@ document.getElementById("wizardForm").addEventListener("submit", async (e) => {
         mealContainer.innerHTML = `
             <div class="bg-red-100 p-4 rounded-xl text-red-700 border border-red-300">
                 <h4 class="font-bold mb-2">Terjadi Kesalahan Koneksi!</h4>
-                <p>Mohon maaf, terjadi masalah saat mengambil rekomendasi dari server (Port 5000). Pastikan server backend Anda sudah berjalan dan endpoint <code>/api/recommend</code> berfungsi dengan benar.</p>
+                <p>Gagal menghubungi server backend. Pastikan server di Hostinger sudah aktif.</p>
                 <p class="mt-2 text-sm text-red-500">Detail: ${error.message}</p>
             </div>
         `;
@@ -486,14 +442,10 @@ document.getElementById("wizardForm").addEventListener("submit", async (e) => {
 
 // --- INITIALIZATION ---
 document.addEventListener("DOMContentLoaded", () => {
-    // Setup Card Selection Listeners
     setupCardSelection('dietSelectionContainer', 'dietInput', 'data-diet');
     setupCardSelection('genderSelectionContainer', 'genderInput', 'data-gender');
     setupCardSelection('activitySelectionContainer', 'activityInput', 'data-activity');
-    
-    // Inisialisasi tampilan langkah pertama
     showStep(currentStep);
-
 });
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -501,10 +453,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!rerollBtn) return;
 
   rerollBtn.addEventListener("click", async () => {
-    if (!lastPayload) {
-      alert("Silakan buat rekomendasi terlebih dahulu");
-      return;
-    }
+    if (!lastPayload) return;
 
     loadingState.classList.remove("hidden");
     mealContainer.innerHTML = "";
@@ -519,6 +468,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const result = await res.json();
       if (!result.success) throw new Error(result.error);
 
+      // Sinkronkan nutrisi hasil reroll dari data BE
       renderRecommendation(
         result.recommendation,
         {
@@ -539,7 +489,3 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
-
-
-
-
